@@ -1,44 +1,34 @@
 package main
 
 import (
-	"context"
 	"fmt"
 	"log"
-	"os"
 	"time"
 
-	"github.com/joho/godotenv"
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
-	"go.mongodb.org/mongo-driver/mongo/readpref"
+	"github.com/teris-io/shortid"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+var sid *shortid.Shortid
+
+type URL struct {
+	ID              primitive.ObjectID `bson:"_id"`
+	CreatedAt       time.Time          `bson:"created_at"`
+	LastTimeVisited time.Time          `bson:"last_time_visited"`
+	Value           string             `bson:"value"`
+	Clicks          int                `bson:"clicks"`
+}
+
+func init() {
+	var err error
+	sid, err = shortid.New(1, shortid.DefaultABC, 232311234542)
+	if err != nil {
+		log.Fatal(err)
+	}
+	shortid.SetDefault(sid)
+}
+
 func main() {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
-	client, err := mongo.NewClient(options.Client().ApplyURI(os.Getenv("ATLAS_URI")))
-	if err != nil {
-		log.Fatal(err)
-	}
-	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
-	err = client.Connect(ctx)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer client.Disconnect(ctx)
-
-	err = client.Ping(ctx, readpref.Primary())
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	databases, err := client.ListDatabaseNames(ctx, bson.M{})
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println(databases)
+	fmt.Printf(shortid.Generate())
 
 }
