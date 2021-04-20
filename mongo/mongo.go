@@ -6,21 +6,12 @@ import (
 	"os"
 	"time"
 
+	"github.com/berabulut/capsule/models"
 	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
-
-type ShortURL struct {
-	ID              primitive.ObjectID `bson:"_id"`
-	Key             string             `bson:"key"`
-	Value           string             `bson:"value"`
-	CreatedAt       time.Time          `bson:"created_at"`
-	LastTimeVisited time.Time          `bson:"last_time_visited"`
-	Clicks          int                `bson:"clicks"`
-}
 
 var collection *mongo.Collection
 var ctx = context.TODO()
@@ -49,18 +40,18 @@ func init() {
 	collection = client.Database("capsule").Collection("urls")
 }
 
-func ShortenURL(url *ShortURL) error {
+func NewRecord(url *models.ShortURL) error {
 	_, err := collection.InsertOne(ctx, url)
 	return err
 }
 
-func GetRecords() (map[string]*ShortURL, error) {
+func GetRecords() (map[string]*models.ShortURL, error) {
 	filter := bson.D{{}}
 	return filterRecords(filter)
 }
 
-func filterRecords(filter interface{}) (map[string]*ShortURL, error) {
-	records := make(map[string]*ShortURL)
+func filterRecords(filter interface{}) (map[string]*models.ShortURL, error) {
+	records := make(map[string]*models.ShortURL)
 
 	cur, err := collection.Find(ctx, filter)
 	if err != nil {
@@ -69,7 +60,7 @@ func filterRecords(filter interface{}) (map[string]*ShortURL, error) {
 
 	// Iterate through the cursor and decode each document one at a time
 	for cur.Next(ctx) {
-		var r ShortURL
+		var r models.ShortURL
 		err := cur.Decode(&r)
 		if err != nil {
 			return records, err
