@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/joho/godotenv"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -51,4 +52,43 @@ func init() {
 func ShortenURL(url *ShortURL) error {
 	_, err := collection.InsertOne(ctx, url)
 	return err
+}
+
+func GetRecords() (map[string]*ShortURL, error) {
+	filter := bson.D{{}}
+	return filterRecords(filter)
+}
+
+func filterRecords(filter interface{}) (map[string]*ShortURL, error) {
+	records := make(map[string]*ShortURL)
+
+	cur, err := collection.Find(ctx, filter)
+	if err != nil {
+		return records, err
+	}
+
+	// Iterate through the cursor and decode each document one at a time
+	for cur.Next(ctx) {
+		var r ShortURL
+		err := cur.Decode(&r)
+		if err != nil {
+			return records, err
+		}
+
+		records[r.Key] = &r
+	}
+
+	if err := cur.Err(); err != nil {
+		return records, err
+	}
+
+	// once exhausted, close the cursor
+	cur.Close(ctx)
+
+	if len(records) == 0 {
+		return records, mongo.ErrNoDocuments
+	}
+
+	return records, nil
+
 }
