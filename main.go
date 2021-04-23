@@ -5,6 +5,7 @@ import (
 
 	"github.com/berabulut/capsule/handlers"
 	db "github.com/berabulut/capsule/mongo"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/teris-io/shortid"
 )
@@ -29,6 +30,7 @@ func main() {
 	}
 
 	r := gin.Default()
+	r.Use(cors.Default())
 	r.POST("/shorten", handlers.ShortenURL(records))
 	r.GET("/:key", handlers.Redirect(records))
 	r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")

@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"fmt"
 	"net/http"
 	"time"
 
@@ -28,7 +27,7 @@ func ShortenURL(records map[string]*models.ShortURL) func(c *gin.Context) {
 		db.NewRecord(shortURL)
 		records[shortid] = shortURL
 		c.JSON(200, gin.H{
-			"message": fmt.Sprintf("URL to store: %v\n", shortURL),
+			"id": shortURL.Key,
 		})
 	}
 }
