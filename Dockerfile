@@ -25,4 +25,4 @@ COPY --from=builder /api/.env .
 
 EXPOSE 8080
 
-ENTRYPOINT ["./app"]
+ENTRYPOINT ./app --port 8080
