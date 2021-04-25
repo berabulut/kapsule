@@ -23,6 +23,6 @@ WORKDIR /api
 COPY --from=builder /api/app .
 COPY --from=builder /api/.env .
 
-EXPOSE 8080
+EXPOSE 8080 8081
 
-ENTRYPOINT ./app --port 8080
+ENTRYPOINT ./app 
