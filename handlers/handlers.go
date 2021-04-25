@@ -32,7 +32,7 @@ func ShortenURL(records map[string]*models.ShortURL) func(c *gin.Context) {
 	}
 }
 
-func Redirect(records map[string]*models.ShortURL) func(c *gin.Context) {
+func RedirectURL(records map[string]*models.ShortURL) func(c *gin.Context) {
 
 	return func(c *gin.Context) {
 		record, found := records[c.Request.URL.Path[1:]]

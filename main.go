@@ -3,14 +3,16 @@ package main
 import (
 	"log"
 
-	"github.com/berabulut/capsule/handlers"
 	db "github.com/berabulut/capsule/mongo"
-	"github.com/gin-contrib/cors"
-	"github.com/gin-gonic/gin"
+	"github.com/berabulut/capsule/routers"
 	"github.com/teris-io/shortid"
+	"golang.org/x/sync/errgroup"
 )
 
-var sid *shortid.Shortid
+var (
+	g   errgroup.Group
+	sid *shortid.Shortid
+)
 
 func init() {
 	var err error
@@ -29,9 +31,15 @@ func main() {
 		log.Fatal(err)
 	}
 
-	r := gin.Default()
-	r.Use(cors.Default())
-	r.POST("/shorten", handlers.ShortenURL(records))
-	r.GET("/:key", handlers.Redirect(records))
-	r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
+	g.Go(func() error {
+		return routers.ApiRouter(records).Run(":8080")
+	})
+
+	g.Go(func() error {
+		return routers.RedirectRouter(records).Run(":8081")
+	})
+
+	if err := g.Wait(); err != nil {
+		log.Fatal(err)
+	}
 }
