@@ -13,6 +13,7 @@ func ApiRouter(records map[string]*models.ShortURL) *gin.Engine {
 	r.Use(cors.Default())
 
 	r.POST("/shorten", handlers.ShortenURL(records))
+	// r.GET("/:key", db.GetRecord("n1K1N6bK2"))
 
 	return r
 }

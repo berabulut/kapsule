@@ -9,6 +9,7 @@ import (
 	"github.com/berabulut/capsule/models"
 	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -49,6 +50,30 @@ func GetRecords() (map[string]*models.ShortURL, error) {
 	filter := bson.D{{}}
 	return filterRecords(filter)
 }
+
+// func GetRecord(key string) (bson.M, error) {
+// 	var record bson.M
+// 	if err := collection.FindOne(ctx, bson.M{"key": key}).Decode(&record); err != nil {
+// 		return nil, err
+// 	}
+// 	return record, nil
+// }
+
+func HandleClick(record *models.ShortURL) error {
+	filter := bson.D{primitive.E{Key: "key", Value: record.Key}}
+
+	update := bson.D{primitive.E{Key: "$set", Value: bson.D{
+		primitive.E{Key: "clicks", Value: record.Clicks},
+		primitive.E{Key: "last_time_visited", Value: record.LastTimeVisited},
+		primitive.E{Key: "visits", Value: record.Visits},
+	}}}
+
+	return collection.FindOneAndUpdate(ctx, filter, update).Decode(record)
+}
+
+// 	t := &Task{}
+// 	return collection.FindOneAndUpdate(ctx, filter, update).Decode(t)
+// }
 
 func filterRecords(filter interface{}) (map[string]*models.ShortURL, error) {
 	records := make(map[string]*models.ShortURL)
