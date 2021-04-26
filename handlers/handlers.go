@@ -16,12 +16,11 @@ func ShortenURL(records map[string]*models.ShortURL) func(c *gin.Context) {
 		var request models.UserInput
 		c.BindJSON(&request)
 		shortid, _ := shortid.Generate()
-		now := time.Now().Unix()
 		shortURL := &models.ShortURL{
 			ID:              primitive.NewObjectID(),
 			Key:             shortid,
 			Value:           request.URL,
-			CreatedAt:       now,
+			CreatedAt:       time.Now().Unix(),
 			LastTimeVisited: time.Now(),
 			Clicks:          0,
 			Visits:          []models.Visit{},
@@ -44,14 +43,16 @@ func RedirectURL(records map[string]*models.ShortURL) func(c *gin.Context) {
 			record := HandleClick(records[key])
 			db.HandleClick(record)
 			records[key] = record
-			c.Redirect(http.StatusMovedPermanently, record.Value)
+			c.Redirect(http.StatusFound, record.Value)
 		} else {
-			c.Redirect(http.StatusMovedPermanently, "/")
+			c.Redirect(http.StatusSeeOther, "http://localhost:3000/")
 		}
 	}
 }
 
 func HandleClick(record *models.ShortURL) *models.ShortURL {
+	record.Clicks += 1
+	record.LastTimeVisited = time.Now()
 	length := len(record.Visits)
 
 	if length > 0 && sameDay(record.LastTimeVisited) { // new click withing the same day
@@ -63,9 +64,6 @@ func HandleClick(record *models.ShortURL) *models.ShortURL {
 		Clicks: 1,
 		Date:   time.Now().Unix(),
 	})
-
-	record.Clicks += 1
-	record.LastTimeVisited = time.Now()
 
 	return record
 }
