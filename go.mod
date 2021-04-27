@@ -12,6 +12,7 @@ require (
 	github.com/leodido/go-urn v1.2.1 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.1 // indirect
+	github.com/mssola/user_agent v0.5.2 // indirect
 	github.com/teris-io/shortid v0.0.0-20201117134242-e59966efd125
 	github.com/ugorji/go v1.2.5 // indirect
 	go.mongodb.org/mongo-driver v1.5.1

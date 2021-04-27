@@ -1,6 +1,4 @@
-1. create rand ID (x)
-2. create a struct for url (x)
-3. take input url convert it to short one ()
-4. db update ()
-
-
+1. endpoint for url data
+2. detail url data 
+3. change url to short?url=1242
+4. setup local mongodb 

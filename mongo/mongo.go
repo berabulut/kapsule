@@ -59,7 +59,7 @@ func GetRecords() (map[string]*models.ShortURL, error) {
 // 	return record, nil
 // }
 
-func HandleClick(record *models.ShortURL) error {
+func HandleClick(record models.ShortURL) error {
 	filter := bson.D{primitive.E{Key: "key", Value: record.Key}}
 
 	update := bson.D{primitive.E{Key: "$set", Value: bson.D{
@@ -68,7 +68,7 @@ func HandleClick(record *models.ShortURL) error {
 		primitive.E{Key: "visits", Value: record.Visits},
 	}}}
 
-	return collection.FindOneAndUpdate(ctx, filter, update).Decode(record)
+	return collection.FindOneAndUpdate(ctx, filter, update).Decode(&record)
 }
 
 // 	t := &Task{}
