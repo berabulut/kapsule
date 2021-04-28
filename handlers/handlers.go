@@ -149,3 +149,22 @@ func GetDetails(records map[string]*models.ShortURL) func(c *gin.Context) {
 
 	}
 }
+
+func GetMultipleRecords(records map[string]*models.ShortURL) func(c *gin.Context) {
+	return func(c *gin.Context) {
+		keys := c.QueryMap("keys")
+		var values []models.ShortURL
+
+		for _, key := range keys {
+			record, found := records[key]
+			if found {
+				values = append(values, *record)
+			}
+		}
+
+		c.JSON(200, gin.H{
+			"records": values,
+		})
+
+	}
+}

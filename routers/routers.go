@@ -15,6 +15,7 @@ func ApiRouter(records map[string]*models.ShortURL) *gin.Engine {
 
 	r.POST("/shorten", handlers.ShortenURL(records))
 	r.GET("/:key", handlers.GetDetails(records))
+	r.GET("/details", handlers.GetMultipleRecords(records))
 	// r.GET("/:key", db.GetRecord("n1K1N6bK2"))
 
 	return r
