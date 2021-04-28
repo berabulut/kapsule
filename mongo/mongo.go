@@ -59,16 +59,19 @@ func GetRecords() (map[string]*models.ShortURL, error) {
 // 	return record, nil
 // }
 
-func HandleClick(record models.ShortURL) error {
-	filter := bson.D{primitive.E{Key: "key", Value: record.Key}}
+func HandleClick(key string, clicks int, lastTimeVisited time.Time, visits []models.Visit) error {
+
+	filter := bson.D{primitive.E{Key: "key", Value: key}}
 
 	update := bson.D{primitive.E{Key: "$set", Value: bson.D{
-		primitive.E{Key: "clicks", Value: record.Clicks},
-		primitive.E{Key: "last_time_visited", Value: record.LastTimeVisited},
-		primitive.E{Key: "visits", Value: record.Visits},
+		primitive.E{Key: "clicks", Value: clicks},
+		primitive.E{Key: "last_time_visited", Value: lastTimeVisited},
+		primitive.E{Key: "visits", Value: visits},
 	}}}
 
-	return collection.FindOneAndUpdate(ctx, filter, update).Decode(&record)
+	r := &models.ShortURL{}
+
+	return collection.FindOneAndUpdate(ctx, filter, update).Decode(r)
 }
 
 // 	t := &Task{}

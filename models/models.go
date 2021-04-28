@@ -21,9 +21,9 @@ type Header struct {
 
 type Visit struct {
 	Clicks    int
-	Date      int64       // unix timestamp
-	UserAgent []UserAgent `bson:"user_agent"`
-	Language  []string    `bson:"language"`
+	Date      int64 // unix timestamp
+	UserAgent []UserAgent
+	Language  []string
 }
 
 type ShortURL struct {
