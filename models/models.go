@@ -30,6 +30,7 @@ type ShortURL struct {
 	ID              primitive.ObjectID `bson:"_id"`
 	Key             string             `bson:"key"`
 	Value           string             `bson:"value"`
+	Title           string             `bson:"title"`
 	CreatedAt       int64              `bson:"created_at"` // unix timestamp
 	LastTimeVisited time.Time          `bson:"last_time_visited"`
 	Clicks          int                `bson:"clicks"`
