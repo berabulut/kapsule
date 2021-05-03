@@ -58,7 +58,7 @@ func sameDay(lastTime time.Time) bool {
 	return true
 }
 
-func handleClick(record *models.ShortURL, userAgent models.UserAgent, language string) {
+func handleClick(record *models.ShortURL, userAgent models.UserAgent, language string, remoteAddr string, xForwardedFor string) {
 
 	now := time.Now()
 	index := len(record.Visits) - 1
@@ -73,16 +73,20 @@ func handleClick(record *models.ShortURL, userAgent models.UserAgent, language s
 		visit.Clicks += 1
 		visit.Language = append(visit.Language, language)
 		visit.UserAgent = append(visit.UserAgent, userAgent)
+		visit.RemoteAddr = remoteAddr
+		visit.XForwardedFor = xForwardedFor
 
 		return
 	}
 
 	record.LastTimeVisited = now
 	record.Visits = append(record.Visits, models.Visit{
-		Clicks:    1,
-		Date:      time.Now().Unix(),
-		Language:  []string{language},
-		UserAgent: []models.UserAgent{userAgent},
+		Clicks:        1,
+		Date:          time.Now().Unix(),
+		Language:      []string{language},
+		UserAgent:     []models.UserAgent{userAgent},
+		RemoteAddr:    remoteAddr,
+		XForwardedFor: xForwardedFor,
 	})
 }
 
@@ -134,8 +138,10 @@ func RedirectURL(records map[string]*models.ShortURL) func(c *gin.Context) {
 		if found {
 			userAgent := parseUserAgent(c.Request.UserAgent())
 			language := parseLanguage(c.Request.Header.Get("Accept-Language"))
+			remoteAddr := c.Request.RemoteAddr
+			xForwardedFor := c.Request.Header.Get("X-FORWARDED-FOR")
 
-			handleClick(record, userAgent, language)
+			handleClick(record, userAgent, language, remoteAddr, xForwardedFor)
 
 			err := db.HandleClick(key, record.Clicks, record.LastTimeVisited, record.Visits)
 			if err != nil {

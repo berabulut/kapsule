@@ -20,10 +20,12 @@ type Header struct {
 }
 
 type Visit struct {
-	Clicks    int
-	Date      int64 // unix timestamp
-	UserAgent []UserAgent
-	Language  []string
+	Clicks        int
+	Date          int64 // unix timestamp
+	UserAgent     []UserAgent
+	Language      []string
+	RemoteAddr    string
+	XForwardedFor string
 }
 
 type ShortURL struct {
