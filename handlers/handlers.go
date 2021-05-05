@@ -73,8 +73,8 @@ func handleClick(record *models.ShortURL, userAgent models.UserAgent, language s
 		visit.Clicks += 1
 		visit.Language = append(visit.Language, language)
 		visit.UserAgent = append(visit.UserAgent, userAgent)
-		visit.RemoteAddr = remoteAddr
-		visit.XForwardedFor = xForwardedFor
+		visit.RemoteAddr = append(visit.RemoteAddr, remoteAddr)
+		visit.XForwardedFor = append(visit.XForwardedFor, xForwardedFor)
 
 		return
 	}
@@ -85,8 +85,8 @@ func handleClick(record *models.ShortURL, userAgent models.UserAgent, language s
 		Date:          time.Now().Unix(),
 		Language:      []string{language},
 		UserAgent:     []models.UserAgent{userAgent},
-		RemoteAddr:    remoteAddr,
-		XForwardedFor: xForwardedFor,
+		RemoteAddr:    []string{remoteAddr},
+		XForwardedFor: []string{xForwardedFor},
 	})
 }
 

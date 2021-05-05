@@ -24,8 +24,8 @@ type Visit struct {
 	Date          int64 // unix timestamp
 	UserAgent     []UserAgent
 	Language      []string
-	RemoteAddr    string
-	XForwardedFor string
+	RemoteAddr    []string
+	XForwardedFor []string
 }
 
 type ShortURL struct {
