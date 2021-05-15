@@ -6,28 +6,12 @@ import (
 	"strings"
 	"time"
 
-	"github.com/berabulut/capsule/handlers/title"
-	"github.com/berabulut/capsule/models"
-	db "github.com/berabulut/capsule/mongo"
+	"github.com/berabulut/kapsule/models"
+	db "github.com/berabulut/kapsule/mongo"
 	"github.com/gin-gonic/gin"
-	"github.com/mssola/user_agent"
 	"github.com/teris-io/shortid"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
-
-func parseUserAgent(userAgent string) models.UserAgent {
-	ua := user_agent.New(userAgent)
-
-	browser, browserVersion := ua.Browser()
-
-	return models.UserAgent{
-		Mobile:         ua.Mobile(),
-		Platform:       ua.Platform(),
-		OS:             ua.OS(),
-		Browser:        browser,
-		BrowserVersion: browserVersion,
-	}
-}
 
 func parseLanguage(language string) string {
 	if len(language) > 0 {
@@ -58,14 +42,14 @@ func sameDay(lastTime time.Time) bool {
 	return true
 }
 
-func handleClick(record *models.ShortURL, userAgent models.UserAgent, language string, remoteAddr string, xForwardedFor string) {
+func handleClick(record *models.ShortURL, userAgent models.UserAgent, language string, remoteAddr string, xForwardedFor string, countryCode string) {
 
 	now := time.Now()
 	index := len(record.Visits) - 1
 
 	record.Clicks += 1
 
-	if index >= 0 && sameDay(record.LastTimeVisited) { // new click withing the same day
+	if index >= 0 && sameDay(record.LastTimeVisited) { // new click within the same day
 
 		record.LastTimeVisited = now
 
@@ -75,6 +59,7 @@ func handleClick(record *models.ShortURL, userAgent models.UserAgent, language s
 		visit.UserAgent = append(visit.UserAgent, userAgent)
 		visit.RemoteAddr = append(visit.RemoteAddr, remoteAddr)
 		visit.XForwardedFor = append(visit.XForwardedFor, xForwardedFor)
+		visit.CountryCode = append(visit.CountryCode, countryCode)
 
 		return
 	}
@@ -87,6 +72,7 @@ func handleClick(record *models.ShortURL, userAgent models.UserAgent, language s
 		UserAgent:     []models.UserAgent{userAgent},
 		RemoteAddr:    []string{remoteAddr},
 		XForwardedFor: []string{xForwardedFor},
+		CountryCode:   []string{countryCode},
 	})
 }
 
@@ -102,7 +88,7 @@ func ShortenURL(records map[string]*models.ShortURL) func(c *gin.Context) {
 		}
 		defer resp.Body.Close()
 
-		htmlTitle, ok := title.GetHtmlTitle(resp.Body)
+		htmlTitle, ok := getHtmlTitle(resp.Body)
 
 		if !ok {
 			htmlTitle = "Not found"
@@ -140,8 +126,9 @@ func RedirectURL(records map[string]*models.ShortURL) func(c *gin.Context) {
 			language := parseLanguage(c.Request.Header.Get("Accept-Language"))
 			remoteAddr := c.Request.RemoteAddr
 			xForwardedFor := c.Request.Header.Get("X-FORWARDED-FOR")
+			countryCode, _ := getCountryCode(xForwardedFor)
 
-			handleClick(record, userAgent, language, remoteAddr, xForwardedFor)
+			handleClick(record, userAgent, language, remoteAddr, xForwardedFor, countryCode)
 
 			err := db.HandleClick(key, record.Clicks, record.LastTimeVisited, record.Visits)
 			if err != nil {

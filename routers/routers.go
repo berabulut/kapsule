@@ -1,8 +1,8 @@
 package routers
 
 import (
-	"github.com/berabulut/capsule/handlers"
-	"github.com/berabulut/capsule/models"
+	"github.com/berabulut/kapsule/handlers"
+	"github.com/berabulut/kapsule/models"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )

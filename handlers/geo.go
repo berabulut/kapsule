@@ -1,4 +1,4 @@
-package geo
+package handlers
 
 import (
 	"encoding/json"
@@ -11,7 +11,7 @@ type response struct {
 	CountryCode string `json:"country_code3"`
 }
 
-func GetCountryCode(IP string) (string, error) {
+func getCountryCode(IP string) (string, error) {
 
 	url := fmt.Sprintf("https://get.geojs.io/v1/ip/geo/%s.json", IP)
 	res, err := http.Get(url)

@@ -3,8 +3,8 @@ package main
 import (
 	"log"
 
-	db "github.com/berabulut/capsule/mongo"
-	"github.com/berabulut/capsule/routers"
+	db "github.com/berabulut/kapsule/mongo"
+	"github.com/berabulut/kapsule/routers"
 	"github.com/teris-io/shortid"
 	"golang.org/x/sync/errgroup"
 )

@@ -6,7 +6,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/berabulut/capsule/models"
+	"github.com/berabulut/kapsule/models"
 	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -18,9 +18,12 @@ var collection *mongo.Collection
 var ctx = context.TODO()
 
 func init() {
-	err := godotenv.Load()
+	err := godotenv.Load(".env") // tests can't find this one somehow
 	if err != nil {
-		log.Fatal("Error loading .env file")
+		err := godotenv.Load("../.env") // for tests
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 	client, err := mongo.NewClient(options.Client().ApplyURI(os.Getenv("ATLAS_URI")))
 	if err != nil {

@@ -1,4 +1,4 @@
-package title
+package handlers
 
 import (
 	"io"
@@ -25,7 +25,7 @@ func traverse(n *html.Node) (string, bool) {
 	return "", false
 }
 
-func GetHtmlTitle(r io.Reader) (string, bool) {
+func getHtmlTitle(r io.Reader) (string, bool) {
 	doc, err := html.Parse(r)
 	if err != nil {
 		return "", false
