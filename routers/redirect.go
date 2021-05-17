@@ -30,9 +30,23 @@ func RedirectURL(records map[string]*models.ShortURL) func(c *gin.Context) {
 			if err != nil {
 				log.Fatal(err)
 			}
+
 			c.Redirect(http.StatusFound, records[key].Value)
-		} else {
-			c.Redirect(http.StatusSeeOther, "http://localhost:3000/")
+			return
 		}
+
+		r, err := db.GetRecord(key)
+
+		if err != nil {
+			c.Redirect(http.StatusSeeOther, "http://localhost:3000/")
+			return
+		}
+
+		if r.Key != "" {
+			c.Redirect(http.StatusFound, r.Value)
+			return
+		}
+
+		c.Redirect(http.StatusSeeOther, "http://localhost:3000/")
 	}
 }

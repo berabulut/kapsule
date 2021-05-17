@@ -66,6 +66,15 @@ func GetDetails(records map[string]*models.ShortURL) func(c *gin.Context) {
 			return
 		}
 
+		r, _ := db.GetRecord(key)
+
+		if r.Key != "" {
+			c.JSON(200, gin.H{
+				"record": r,
+			})
+			return
+		}
+
 		c.JSON(404, gin.H{
 			"record": "",
 		})
@@ -82,6 +91,12 @@ func GetMultipleRecords(records map[string]*models.ShortURL) func(c *gin.Context
 			record, found := records[key]
 			if found {
 				values = append(values, *record)
+			} else {
+				r, _ := db.GetRecord(key)
+
+				if r.Key != "" {
+					values = append(values, *record)
+				}
 			}
 		}
 

@@ -1,4 +1,4 @@
-package api
+package mongo
 
 import (
 	"context"
@@ -54,13 +54,13 @@ func GetRecords() (map[string]*models.ShortURL, error) {
 	return filterRecords(filter)
 }
 
-// func GetRecord(key string) (bson.M, error) {
-// 	var record bson.M
-// 	if err := collection.FindOne(ctx, bson.M{"key": key}).Decode(&record); err != nil {
-// 		return nil, err
-// 	}
-// 	return record, nil
-// }
+func GetRecord(key string) (models.ShortURL, error) {
+	record := &models.ShortURL{}
+	if err := collection.FindOne(ctx, bson.M{"key": key}).Decode(record); err != nil {
+		return models.ShortURL{}, err
+	}
+	return *record, nil
+}
 
 func HandleClick(key string, clicks int, lastTimeVisited time.Time, visits []models.Visit) error {
 
