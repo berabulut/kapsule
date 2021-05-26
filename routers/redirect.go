@@ -10,6 +10,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+var notFoundURL = "http://localhost:3000/"
+
 func RedirectURL(records map[string]*models.ShortURL) func(c *gin.Context) {
 
 	return func(c *gin.Context) {
@@ -31,22 +33,28 @@ func RedirectURL(records map[string]*models.ShortURL) func(c *gin.Context) {
 				log.Fatal(err)
 			}
 
-			c.Redirect(http.StatusFound, records[key].Value)
+			// c.Redirect(http.StatusFound, records[key].Value)
+			c.HTML(http.StatusOK, "redirect.tmpl", gin.H{
+				"title": record.Title,
+			})
 			return
 		}
 
 		r, err := db.GetRecord(key)
 
 		if err != nil {
-			c.Redirect(http.StatusSeeOther, "http://localhost:3000/")
+			c.Redirect(http.StatusSeeOther, notFoundURL)
 			return
 		}
 
 		if r.Key != "" {
-			c.Redirect(http.StatusFound, r.Value)
+			// c.Redirect(http.StatusFound, r.Value)
+			c.HTML(http.StatusOK, "redirect.tmpl", gin.H{
+				"title": "Posts",
+			})
 			return
 		}
 
-		c.Redirect(http.StatusSeeOther, "http://localhost:3000/")
+		c.Redirect(http.StatusSeeOther, notFoundURL)
 	}
 }

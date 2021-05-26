@@ -27,6 +27,10 @@ func RedirectRouter(records map[string]*models.ShortURL) *gin.Engine {
 	r.Use(cors.Default())
 	r.Use(gin.Logger())
 
+	// r.LoadHTMLGlob("templates/**")
+	r.LoadHTMLGlob("./web/templates/**")
+	r.Static("/static", "./web/static")
+
 	r.GET("/:key", RedirectURL(records))
 
 	return r
