@@ -26,6 +26,11 @@ func RedirectURL(records map[string]*models.ShortURL) func(c *gin.Context) {
 			xForwardedFor := c.Request.Header.Get("X-FORWARDED-FOR")
 			countryCode, _ := helpers.GetCountryCode(xForwardedFor)
 
+			go c.HTML(http.StatusOK, "redirect.tmpl", gin.H{
+				"title": record.Title,
+				"url":   records[key].Value,
+			})
+
 			helpers.HandleClick(record, userAgent, language, remoteAddr, xForwardedFor, countryCode)
 
 			err := db.HandleClick(key, record.Clicks, record.LastTimeVisited, record.Visits)
@@ -34,10 +39,7 @@ func RedirectURL(records map[string]*models.ShortURL) func(c *gin.Context) {
 			}
 
 			// c.Redirect(http.StatusFound, records[key].Value)
-			c.HTML(http.StatusOK, "redirect.tmpl", gin.H{
-				"title": record.Title,
-				"url":   records[key].Value,
-			})
+
 			return
 		}
 
@@ -50,7 +52,7 @@ func RedirectURL(records map[string]*models.ShortURL) func(c *gin.Context) {
 
 		if r.Key != "" {
 			// c.Redirect(http.StatusFound, r.Value)
-			c.HTML(http.StatusOK, "redirect.tmpl", gin.H{
+			go c.HTML(http.StatusOK, "redirect.tmpl", gin.H{
 				"title": "Posts",
 			})
 			return
