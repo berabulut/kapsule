@@ -1,0 +1,75 @@
+{{ define "redirect.tmpl" }}
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="Kapsule-Redirecting" />
+    <link rel="shortcut icon" type="image/x-icon" href="/static/logo.ico" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Roboto:200,300,400,500,600,700&display=swap"
+      rel="stylesheet"
+    />
+    <title>Kapsule - Redirecting</title>
+    <style>
+      h1 {
+        font-family: 'Roboto';
+        font-size: 4rem;
+      }
+      #container {
+        width: 100%;
+        height: 100%;
+      }
+      #top {
+        display: flex;
+        justify-content: center;
+        margin-top: 70px;
+      }
+      #bottom {
+        display: flex;
+        justify-content: center;
+      }
+      #logo {
+        margin-left: -50px;
+      }
+      #countdown {
+        font-family: 'Roboto';
+        font-size: 2.25rem;
+        margin-top: 100px;
+        font-weight: 500;
+      }
+      #title {
+        font-family: 'Roboto';
+        font-size: 2.25rem;
+        margin-top: 50px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="container">
+      <div id="top">
+        <img src="/static/ylogo.png" alt="Kapsule-Logo" id="logo" width="400">
+      </div>
+      <div id="bottom">
+        <p id="title">{{ .title }}</p>
+      </div>
+      <div id="bottom">
+        <p id="countdown">3</p>
+      </div>
+    <div>
+    <script>
+    var timeleft = 3;
+    var downloadTimer = setInterval(function(){
+      if(timeleft <= 0){
+        clearInterval(downloadTimer);
+        document.getElementById("countdown").innerHTML = "Redirecting";
+        location.replace({{ .url }})
+      } else {
+        document.getElementById("countdown").innerHTML = timeleft;
+      }
+      timeleft -= 1;
+    }, 800);
+    </script>
+  </body>
+</html>
+{{ end }}
