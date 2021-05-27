@@ -36,6 +36,7 @@ func RedirectURL(records map[string]*models.ShortURL) func(c *gin.Context) {
 			// c.Redirect(http.StatusFound, records[key].Value)
 			c.HTML(http.StatusOK, "redirect.tmpl", gin.H{
 				"title": record.Title,
+				"url":   records[key].Value,
 			})
 			return
 		}
