@@ -3,6 +3,7 @@ package routers
 import (
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/berabulut/kapsule/helpers"
 	"github.com/berabulut/kapsule/models"
@@ -10,7 +11,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-var notFoundURL = "http://localhost:3000/"
+var notFoundURL string
+
+func init() {
+	notFoundURL = os.Getenv("NOT_FOUND_URL") // godotenv should have loaded  by now
+}
 
 func RedirectURL(records map[string]*models.ShortURL) func(c *gin.Context) {
 
@@ -57,7 +62,6 @@ func RedirectURL(records map[string]*models.ShortURL) func(c *gin.Context) {
 			})
 			return
 		}
-
 		c.Redirect(http.StatusSeeOther, notFoundURL)
 	}
 }
