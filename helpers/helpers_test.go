@@ -86,7 +86,7 @@ func TestHandleClick(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		HandleClick(records[test.key], models.UserAgent{}, "", "", "", "")
+		HandleClick(records[test.key], models.UserAgent{}, "", "")
 
 		got := records[test.key].Clicks
 		want := test.clicks + 1

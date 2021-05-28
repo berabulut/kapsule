@@ -51,7 +51,7 @@ func sameDay(lastTime time.Time) bool {
 	return true
 }
 
-func HandleClick(record *models.ShortURL, userAgent models.UserAgent, language string, remoteAddr string, xForwardedFor string, countryCode string) {
+func HandleClick(record *models.ShortURL, userAgent models.UserAgent, language string, countryCode string) { // update record's properties
 
 	now := time.Now()
 	index := len(record.Visits) - 1
@@ -66,8 +66,6 @@ func HandleClick(record *models.ShortURL, userAgent models.UserAgent, language s
 		visit.Clicks += 1
 		visit.Language = append(visit.Language, language)
 		visit.UserAgent = append(visit.UserAgent, userAgent)
-		visit.RemoteAddr = append(visit.RemoteAddr, remoteAddr)
-		visit.XForwardedFor = append(visit.XForwardedFor, xForwardedFor)
 		visit.CountryCode = append(visit.CountryCode, countryCode)
 
 		return
@@ -75,12 +73,10 @@ func HandleClick(record *models.ShortURL, userAgent models.UserAgent, language s
 
 	record.LastTimeVisited = now
 	record.Visits = append(record.Visits, models.Visit{
-		Clicks:        1,
-		Date:          time.Now().Unix(),
-		Language:      []string{language},
-		UserAgent:     []models.UserAgent{userAgent},
-		RemoteAddr:    []string{remoteAddr},
-		XForwardedFor: []string{xForwardedFor},
-		CountryCode:   []string{countryCode},
+		Clicks:      1,
+		Date:        time.Now().Unix(),
+		Language:    []string{language},
+		UserAgent:   []models.UserAgent{userAgent},
+		CountryCode: []string{countryCode},
 	})
 }

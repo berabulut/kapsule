@@ -13,7 +13,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-func ShortenURL(records map[string]*models.ShortURL) func(c *gin.Context) {
+func ShortenURL() func(c *gin.Context) {
 	return func(c *gin.Context) {
 		var request models.UserInput
 		c.BindJSON(&request)
@@ -44,7 +44,6 @@ func ShortenURL(records map[string]*models.ShortURL) func(c *gin.Context) {
 		}
 
 		db.NewRecord(shortURL)
-		records[shortid] = shortURL
 
 		c.JSON(200, gin.H{
 			"id":    shortURL.Key,
@@ -53,24 +52,15 @@ func ShortenURL(records map[string]*models.ShortURL) func(c *gin.Context) {
 	}
 }
 
-func GetDetails(records map[string]*models.ShortURL) func(c *gin.Context) {
+func GetDetails() func(c *gin.Context) {
 	return func(c *gin.Context) {
 
 		key := c.Request.URL.Path[1:]
-		record, found := records[key]
+		record, _ := db.GetRecord(key)
 
-		if found {
+		if record.Key != "" {
 			c.JSON(200, gin.H{
 				"record": record,
-			})
-			return
-		}
-
-		r, _ := db.GetRecord(key)
-
-		if r.Key != "" {
-			c.JSON(200, gin.H{
-				"record": r,
 			})
 			return
 		}
@@ -82,21 +72,19 @@ func GetDetails(records map[string]*models.ShortURL) func(c *gin.Context) {
 	}
 }
 
-func GetMultipleRecords(records map[string]*models.ShortURL) func(c *gin.Context) {
+func GetMultipleRecords() func(c *gin.Context) {
 	return func(c *gin.Context) {
+
 		keys := c.QueryMap("keys")
+
 		var values []models.ShortURL
 
 		for _, key := range keys {
-			record, found := records[key]
-			if found {
-				values = append(values, *record)
-			} else {
-				r, _ := db.GetRecord(key)
 
-				if r.Key != "" {
-					values = append(values, *record)
-				}
+			record, _ := db.GetRecord(key)
+
+			if record.Key != "" {
+				values = append(values, record)
 			}
 		}
 
