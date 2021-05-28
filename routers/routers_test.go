@@ -25,7 +25,7 @@ var records = map[string]*models.ShortURL{
 }
 
 func TestRedirectURL(t *testing.T) {
-	r := RedirectRouter(records)
+	r := RedirectRouter()
 
 	type addTest struct {
 		key  string
@@ -70,7 +70,7 @@ func TestRedirectURL(t *testing.T) {
 }
 
 func TestShortenURL(t *testing.T) {
-	r := ApiRouter(records)
+	r := ApiRouter()
 
 	type addTest struct {
 		key   string
@@ -124,7 +124,7 @@ func TestShortenURL(t *testing.T) {
 }
 
 func TestGetDetails(t *testing.T) {
-	r := ApiRouter(records)
+	r := ApiRouter()
 
 	type addTest struct {
 		key   string

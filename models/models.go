@@ -14,19 +14,12 @@ type UserAgent struct {
 	BrowserVersion string
 }
 
-// type Header struct {
-// 	AcceptLanguage string `json:"Accept-Language"`
-// 	UserAgent      string `json:"User-Agent"`
-// }
-
 type Visit struct {
-	Clicks        int
-	Date          int64 // unix timestamp
-	UserAgent     []UserAgent
-	Language      []string
-	RemoteAddr    []string
-	XForwardedFor []string
-	CountryCode   []string
+	Clicks      int
+	Date        int64 // unix timestamp
+	UserAgent   []UserAgent
+	Language    []string
+	CountryCode []string
 }
 
 type ShortURL struct {

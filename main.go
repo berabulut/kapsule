@@ -3,7 +3,6 @@ package main
 import (
 	"log"
 
-	db "github.com/berabulut/kapsule/mongo"
 	"github.com/berabulut/kapsule/routers"
 	"github.com/teris-io/shortid"
 	"golang.org/x/sync/errgroup"
@@ -26,17 +25,12 @@ func init() {
 
 func main() {
 
-	records, err := db.GetRecords()
-	if err != nil {
-		log.Fatal(err)
-	}
-
 	g.Go(func() error {
-		return routers.ApiRouter(records).Run(":8080")
+		return routers.ApiRouter().Run(":8080")
 	})
 
 	g.Go(func() error {
-		return routers.RedirectRouter(records).Run(":8081")
+		return routers.RedirectRouter().Run(":8081")
 	})
 
 	if err := g.Wait(); err != nil {
