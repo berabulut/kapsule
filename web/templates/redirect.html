@@ -70,8 +70,8 @@
     var downloadTimer = setInterval(function(){
       if(timeleft <= 0){
         clearInterval(downloadTimer);
-        document.getElementById("countdown").innerHTML = "Redirecting";
-        //location.replace({{ .url }})
+        //document.getElementById("countdown").innerHTML = "Redirecting";
+        location.replace({{ .url }})
       } else {
         document.getElementById("countdown").innerHTML = timeleft;
       }

@@ -25,7 +25,7 @@ func RedirectRouter() *gin.Engine {
 	r.Use(cors.Default())
 	r.Use(gin.Logger())
 
-	// r.LoadHTMLGlob("templates/**")
+	//r.LoadHTMLGlob("templates/**")
 	r.LoadHTMLGlob("./web/templates/**")
 	r.Static("/static", "./web/static")
 
