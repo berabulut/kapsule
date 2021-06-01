@@ -10,6 +10,14 @@
       href="https://fonts.googleapis.com/css?family=Roboto:200,300,400,500,600,700&display=swap"
       rel="stylesheet"
     />
+    <link
+      href="https://fonts.googleapis.com/css?family=Open+Sans:200,300,400,500,600,700&display=swap"
+      rel="stylesheet"
+    />
+        <link
+      href="https://fonts.googleapis.com/css?family=Quicksand:200,300,400,500,600,700&display=swap"
+      rel="stylesheet"
+    />
     <title>Kapsule - Redirecting</title>
     <style>
       h1 {
@@ -63,7 +71,7 @@
       if(timeleft <= 0){
         clearInterval(downloadTimer);
         document.getElementById("countdown").innerHTML = "Redirecting";
-        location.replace({{ .url }})
+        //location.replace({{ .url }})
       } else {
         document.getElementById("countdown").innerHTML = timeleft;
       }
