@@ -54,7 +54,6 @@ func ShortenURL() func(c *gin.Context) {
 
 func GetDetails() func(c *gin.Context) {
 	return func(c *gin.Context) {
-
 		key := c.Request.URL.Path[1:]
 		record, _ := db.GetRecord(key)
 

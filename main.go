@@ -15,7 +15,8 @@ var (
 
 func init() {
 	var err error
-	sid, err = shortid.New(1, shortid.DefaultABC, 232311234542)
+	const alphabet = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_*"
+	sid, err = shortid.New(1, alphabet, 232311234542)
 	if err != nil {
 		log.Fatal(err)
 	}
