@@ -28,18 +28,28 @@ func RedirectURL() func(c *gin.Context) {
 			return
 		}
 
+		// record has been found
 		if record.Key != "" {
 			userAgent := helpers.ParseUserAgent(c.Request.UserAgent())
 			language := helpers.ParseLanguage(c.Request.Header.Get("Accept-Language"))
 			countryCode, _ := helpers.GetCountryCode(c.Request.Header.Get("X-FORWARDED-FOR"))
 
-			go c.HTML(http.StatusOK, "redirect.tmpl", gin.H{
-				"title": record.Title,
-				"url":   record.Value,
-			})
+			// show a static page before redirecting
+			if record.Options.Enabled {
+				go c.HTML(http.StatusOK, "redirect.tmpl", gin.H{
+					"title":    record.Title,
+					"url":      record.Value,
+					"duration": record.Options.Duration,
+					"note":     record.Options.Note,
+				})
+			} else {
+				c.Redirect(http.StatusFound, record.Value)
+			}
 
+			// update values
 			helpers.HandleClick(&record, userAgent, language, countryCode)
 
+			// update db with returned values
 			err := db.HandleClick(key, record.Clicks, record.LastTimeVisited, record.Visits)
 			if err != nil {
 				log.Fatal(err)

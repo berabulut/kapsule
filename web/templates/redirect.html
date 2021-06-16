@@ -50,6 +50,14 @@
         font-family: 'Roboto';
         font-size: 2.25rem;
         margin-top: 50px;
+        font-weight: 450;
+        text-align: center;
+      }
+      #note {
+        font-family: 'Roboto';
+        font-size: 2rem;
+        margin-top: 50px;
+        text-align: center;
       }
     </style>
   </head>
@@ -62,11 +70,14 @@
         <p id="title">{{ .title }}</p>
       </div>
       <div id="bottom">
-        <p id="countdown">3</p>
+        <p id="note">{{ .note }}</p>
+      </div>
+      <div id="bottom">
+        <p id="countdown">{{ .duration }}</p>
       </div>
     <div>
     <script>
-    var timeleft = 3;
+    var timeleft = {{ .duration }} - 1;
     var downloadTimer = setInterval(function(){
       if(timeleft <= 0){
         clearInterval(downloadTimer);

@@ -41,7 +41,7 @@ func init() {
 		log.Fatal(err)
 	}
 
-	collection = client.Database("capsule").Collection("urls")
+	collection = client.Database("kapsule").Collection("urls")
 }
 
 func NewRecord(url *models.ShortURL) error {
