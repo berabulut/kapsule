@@ -40,7 +40,7 @@ func RedirectURL() func(c *gin.Context) {
 					"title":    record.Title,
 					"url":      record.Value,
 					"duration": record.Options.Duration,
-					"note":     record.Options.Note,
+					"message":  record.Options.Message,
 				})
 			} else {
 				c.Redirect(http.StatusFound, record.Value)

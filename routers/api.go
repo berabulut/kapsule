@@ -45,7 +45,7 @@ func ShortenURL() func(c *gin.Context) {
 			Options: models.Options{
 				Enabled:  request.OptionsEnabled,
 				Duration: request.Duration % 11,
-				Note:     request.Note,
+				Message:  request.Message,
 			},
 		}
 

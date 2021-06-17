@@ -25,7 +25,7 @@ type Visit struct {
 type Options struct {
 	Enabled  bool
 	Duration int
-	Note     string
+	Message  string
 }
 
 type ShortURL struct {
@@ -44,5 +44,5 @@ type UserInput struct {
 	URL            string `json:"url"`
 	OptionsEnabled bool   `json:"options_enabled"`
 	Duration       int    `json:"duration"`
-	Note           string `json:"note"`
+	Message        string `json:"message"`
 }
