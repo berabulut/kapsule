@@ -19,6 +19,7 @@ func ShortenURL() func(c *gin.Context) {
 		c.BindJSON(&request)
 		shortid, _ := shortid.Generate()
 
+		// to get title of html page
 		resp, err := http.Get(request.URL)
 		if err != nil {
 			panic(err)
@@ -41,6 +42,11 @@ func ShortenURL() func(c *gin.Context) {
 			Clicks:    0,
 			Visits:    []models.Visit{},
 			Title:     htmlTitle,
+			Options: models.Options{
+				Enabled:  request.OptionsEnabled,
+				Duration: request.Duration % 11,
+				Message:  request.Message,
+			},
 		}
 
 		db.NewRecord(shortURL)

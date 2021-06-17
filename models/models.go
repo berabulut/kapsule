@@ -22,6 +22,12 @@ type Visit struct {
 	CountryCode []string
 }
 
+type Options struct {
+	Enabled  bool
+	Duration int
+	Message  string
+}
+
 type ShortURL struct {
 	ID              primitive.ObjectID `bson:"_id"`
 	Key             string             `bson:"key"`
@@ -31,8 +37,12 @@ type ShortURL struct {
 	LastTimeVisited time.Time          `bson:"last_time_visited"`
 	Clicks          int                `bson:"clicks"`
 	Visits          []Visit            `bson:"visits"`
+	Options         Options            `bson:"options"`
 }
 
 type UserInput struct {
-	URL string `bson:"url"`
+	URL            string `json:"url"`
+	OptionsEnabled bool   `json:"options_enabled"`
+	Duration       int    `json:"duration"`
+	Message        string `json:"message"`
 }
