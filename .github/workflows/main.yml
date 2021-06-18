@@ -5,7 +5,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - uses: SpicyPizza/create-envfile@v1.1
+    - uses: SpicyPizza/create-envfile@master
       with:
         envkey_ATLAS_URI: ${{ secrets.DB_CONNECTION_STRING }}
         envkey_NOT_FOUND_URL: ${{ secrets.NOT_FOUND_URL }}
