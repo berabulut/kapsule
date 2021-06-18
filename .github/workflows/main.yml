@@ -5,6 +5,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+    - uses: SpicyPizza/create-envfile@v1.1
+      with:
+        envkey_ATLAS_URI: ${{ secrets.DB_CONNECTION_STRING }}
+        envkey_NOT_FOUND_URL: ${{ secrets.NOT_FOUND_URL }}
     - uses: kciter/aws-ecr-action@v3
       with:
         access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
