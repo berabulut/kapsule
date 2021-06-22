@@ -1,7 +1,9 @@
 package routers
 
 import (
+	"log"
 	"net/http"
+	"os"
 	"strings"
 	"time"
 
@@ -13,6 +15,8 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+var Error = log.New(os.Stdout, "\u001b[31mERROR: \u001b[0m", log.LstdFlags|log.Lshortfile)
+
 func ShortenURL() func(c *gin.Context) {
 	return func(c *gin.Context) {
 		var request models.UserInput
@@ -22,7 +26,7 @@ func ShortenURL() func(c *gin.Context) {
 		// to get title of html page
 		resp, err := http.Get(request.URL)
 		if err != nil {
-			panic(err)
+			Error.Println(err)
 		}
 		defer resp.Body.Close()
 
