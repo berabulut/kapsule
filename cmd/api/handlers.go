@@ -1,4 +1,4 @@
-package routers
+package main
 
 import (
 	"log"
@@ -7,7 +7,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/berabulut/kapsule/helpers"
 	"github.com/berabulut/kapsule/models"
 	db "github.com/berabulut/kapsule/mongo"
 	"github.com/gin-gonic/gin"
@@ -17,9 +16,16 @@ import (
 
 var Error = log.New(os.Stdout, "\u001b[31mERROR: \u001b[0m", log.LstdFlags|log.Lshortfile)
 
+type UserInput struct {
+	URL            string `json:"url"`
+	OptionsEnabled bool   `json:"options_enabled"`
+	Duration       int    `json:"duration"`
+	Message        string `json:"message"`
+}
+
 func ShortenURL() func(c *gin.Context) {
 	return func(c *gin.Context) {
-		var request models.UserInput
+		var request UserInput
 		c.BindJSON(&request)
 		shortid, _ := shortid.Generate()
 
@@ -30,7 +36,7 @@ func ShortenURL() func(c *gin.Context) {
 		}
 		defer resp.Body.Close()
 
-		htmlTitle, ok := helpers.GetHtmlTitle(resp.Body)
+		htmlTitle, ok := GetHtmlTitle(resp.Body)
 
 		if !ok {
 			htmlTitle = "Not found"
@@ -74,9 +80,7 @@ func GetDetails() func(c *gin.Context) {
 			return
 		}
 
-		c.JSON(404, gin.H{
-			"record": "",
-		})
+		c.JSON(404, gin.H{})
 
 	}
 }
@@ -104,9 +108,7 @@ func GetMultipleRecords() func(c *gin.Context) {
 			return
 		}
 
-		c.JSON(404, gin.H{
-			"records": nil,
-		})
+		c.JSON(404, gin.H{})
 
 	}
 }
