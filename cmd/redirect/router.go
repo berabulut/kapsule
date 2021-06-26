@@ -8,10 +8,9 @@ import (
 
 	"github.com/berabulut/kapsule/models"
 	db "github.com/berabulut/kapsule/mongo"
-	"github.com/chenjiandongx/ginprom"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"github.com/penglongli/gin-metrics/ginmetrics"
 )
 
 var notFoundURL = os.Getenv("NOT_FOUND_URL")
@@ -99,9 +98,11 @@ func RedirectRouter() *gin.Engine {
 	r.Use(cors.Default())
 	r.Use(gin.Logger())
 
-	// prometheus middleware
-	r.Use(ginprom.PromMiddleware(nil))
-	r.GET("/metrics", ginprom.PromHandler(promhttp.Handler()))
+	m := ginmetrics.GetMonitor()
+	m.SetMetricPath("/metrics")
+	m.SetSlowTime(10)
+	m.SetDuration([]float64{0.1, 0.3, 1.2, 5, 10})
+	m.Use(r)
 
 	//r.LoadHTMLGlob("templates/**")
 	r.LoadHTMLGlob("../../web/templates/**")

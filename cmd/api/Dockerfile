@@ -20,7 +20,6 @@ RUN apk update && apk add ca-certificates && rm -rf /var/cache/apk/*
 
 COPY --from=builder /app/cmd/api/bin ./app/cmd/api/
 COPY --from=builder /app/.env .
-COPY --from=builder /app/web/ ./web/
 
 
 EXPOSE 8080 

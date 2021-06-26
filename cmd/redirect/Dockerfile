@@ -4,26 +4,25 @@ FROM golang:${GO_VERSION}-alpine AS builder
 
 RUN apk update && apk add alpine-sdk git && rm -rf /var/cache/apk/*
 
-RUN mkdir -p /api
-WORKDIR /api
+RUN mkdir -p /app
+WORKDIR /app
 
-COPY go.mod .
-COPY go.sum .
+
+COPY ../../ .
 RUN go mod download
+RUN go build -o ./cmd/redirect/bin ./cmd/redirect
 
-COPY . .
-RUN go build -o ./app ./main.go
 
 FROM alpine:latest
 
 RUN apk update && apk add ca-certificates && rm -rf /var/cache/apk/*
 
 
-COPY --from=builder /api/app .
-COPY --from=builder /api/.env .
-COPY --from=builder /api/web/ ./web/
+COPY --from=builder /app/cmd/redirect/bin ./app/cmd/redirect/
+COPY --from=builder /app/.env .
+COPY --from=builder /app/web/ ./web/
 
 
-EXPOSE 8080 8081
+EXPOSE 8080 
 
-ENTRYPOINT ./app 
+ENTRYPOINT ./app/cmd/redirect/bin 
