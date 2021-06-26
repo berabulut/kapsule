@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 	"net/http"
 	"os"
 	"time"
@@ -15,19 +14,21 @@ import (
 
 var notFoundURL = os.Getenv("NOT_FOUND_URL")
 
-func HandleClick(record *models.ShortURL, userAgent models.UserAgent, language string, countryCode string) { // update record's properties
+// update record properties
+func handleClick(record *models.ShortURL, userAgent models.UserAgent, language string, countryCode string) {
 
 	now := time.Now()
 	index := len(record.Visits) - 1
 
-	record.Clicks += 1
+	record.Clicks++
 
-	if index >= 0 && SameDay(record.LastTimeVisited) { // new click within the same day
+	// new click within the same day
+	if index >= 0 && SameDay(record.LastTimeVisited) {
 
 		record.LastTimeVisited = now
 
 		visit := &record.Visits[index]
-		visit.Clicks += 1
+		visit.Clicks++
 		visit.Language = append(visit.Language, language)
 		visit.UserAgent = append(visit.UserAgent, userAgent)
 		visit.CountryCode = append(visit.CountryCode, countryCode)
@@ -48,24 +49,18 @@ func HandleClick(record *models.ShortURL, userAgent models.UserAgent, language s
 func RedirectURL() func(c *gin.Context) {
 
 	return func(c *gin.Context) {
+
 		key := c.Request.URL.Path[1:]
 
-		record, err := db.GetRecord(key)
-
-		if err != nil {
-			c.Redirect(http.StatusSeeOther, notFoundURL)
-			return
-		}
-
-		// record has been found
-		if record.Key != "" {
+		// if record has been found
+		if record, err := db.GetRecord(key); record.Key != "" {
 			userAgent := ParseUserAgent(c.Request.UserAgent())
 			language := ParseLanguage(c.Request.Header.Get("Accept-Language"))
 			countryCode, _ := GetCountryCode(c.Request.Header.Get("X-FORWARDED-FOR"))
 
 			// show a static page before redirecting
 			if record.Options.Enabled {
-				go c.HTML(http.StatusOK, "redirect.tmpl", gin.H{
+				c.HTML(http.StatusOK, "redirect.tmpl", gin.H{
 					"title":    record.Title,
 					"url":      record.Value,
 					"duration": record.Options.Duration,
@@ -75,16 +70,18 @@ func RedirectURL() func(c *gin.Context) {
 				c.Redirect(http.StatusFound, record.Value)
 			}
 
-			// update values
-			HandleClick(&record, userAgent, language, countryCode)
+			// update record properties before updating database
+			handleClick(&record, userAgent, language, countryCode)
 
 			// update db with returned values
-			err := db.HandleClick(key, record.Clicks, record.LastTimeVisited, record.Visits)
-			if err != nil {
-				log.Fatal(err)
+			if err := db.HandleClick(key, record.Clicks, record.LastTimeVisited, record.Visits); err != nil {
+				Error.Println(err)
 			}
 
 			return
+
+		} else if err != nil {
+			Error.Println(err)
 		}
 
 		c.Redirect(http.StatusSeeOther, notFoundURL)

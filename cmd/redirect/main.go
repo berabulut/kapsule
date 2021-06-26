@@ -2,12 +2,14 @@ package main
 
 import (
 	"log"
+	"os"
 
 	"github.com/teris-io/shortid"
 )
 
 var (
-	sid *shortid.Shortid
+	sid   *shortid.Shortid
+	Error = log.New(os.Stdout, "\u001b[31mERROR: \u001b[0m", log.LstdFlags|log.Lshortfile)
 )
 
 func init() {
@@ -23,5 +25,5 @@ func init() {
 
 func main() {
 
-	RedirectRouter().Run(":8081")
+	RedirectRouter().Run(":8080")
 }
