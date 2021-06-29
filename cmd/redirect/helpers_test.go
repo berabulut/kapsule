@@ -1,7 +1,6 @@
-package helpers
+package main
 
 import (
-	"net/http"
 	"testing"
 	"time"
 
@@ -43,33 +42,6 @@ func TestGetCountryCode(t *testing.T) {
 
 }
 
-func TestGetHtmlTitle(t *testing.T) {
-
-	type addTest struct {
-		url, title string
-	}
-
-	tests := []addTest{
-		{"https://github.com/berabulut", "berabulut (Hüseyin Bera Bulut) · GitHub"},
-		{"https://www.digitalocean.com/", "DigitalOcean – The developer cloud"},
-	}
-
-	for _, test := range tests {
-		res, err := http.Get(test.url)
-		if err != nil {
-			t.Errorf("%s", err)
-		}
-
-		got, _ := GetHtmlTitle(res.Body)
-		want := test.title
-
-		if got != want {
-			t.Errorf("got %q, wanted %q", got, want)
-		}
-	}
-
-}
-
 func TestHandleClick(t *testing.T) {
 	type addTest struct {
 		key    string
@@ -86,7 +58,7 @@ func TestHandleClick(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		HandleClick(records[test.key], models.UserAgent{}, "", "")
+		handleClick(records[test.key], models.UserAgent{}, "", "")
 
 		got := records[test.key].Clicks
 		want := test.clicks + 1

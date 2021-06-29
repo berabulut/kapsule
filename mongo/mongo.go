@@ -18,13 +18,12 @@ var collection *mongo.Collection
 var ctx = context.TODO()
 
 func init() {
-	err := godotenv.Load(".env") // tests can't find this one somehow
-	if err != nil {
-		err := godotenv.Load("../.env") // for tests
-		if err != nil {
-			log.Fatal(err)
-		}
+
+	// the .env path is from cmd/api or cmd/redirect
+	if err := godotenv.Load("../../.env"); err != nil {
+		log.Fatal(err)
 	}
+
 	client, err := mongo.NewClient(options.Client().ApplyURI(os.Getenv("ATLAS_URI")))
 	if err != nil {
 		log.Fatal(err)

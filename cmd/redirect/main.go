@@ -2,15 +2,14 @@ package main
 
 import (
 	"log"
+	"os"
 
-	"github.com/berabulut/kapsule/routers"
 	"github.com/teris-io/shortid"
-	"golang.org/x/sync/errgroup"
 )
 
 var (
-	g   errgroup.Group
-	sid *shortid.Shortid
+	sid   *shortid.Shortid
+	Error = log.New(os.Stdout, "\u001b[31mERROR: \u001b[0m", log.LstdFlags|log.Lshortfile)
 )
 
 func init() {
@@ -26,15 +25,5 @@ func init() {
 
 func main() {
 
-	g.Go(func() error {
-		return routers.ApiRouter().Run(":8080")
-	})
-
-	g.Go(func() error {
-		return routers.RedirectRouter().Run(":8081")
-	})
-
-	if err := g.Wait(); err != nil {
-		log.Fatal(err)
-	}
+	RedirectRouter().Run(":8080")
 }

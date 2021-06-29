@@ -1,4 +1,4 @@
-package helpers
+package main
 
 import (
 	"io"

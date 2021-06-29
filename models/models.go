@@ -39,10 +39,3 @@ type ShortURL struct {
 	Visits          []Visit            `bson:"visits"`
 	Options         Options            `bson:"options"`
 }
-
-type UserInput struct {
-	URL            string `json:"url"`
-	OptionsEnabled bool   `json:"options_enabled"`
-	Duration       int    `json:"duration"`
-	Message        string `json:"message"`
-}

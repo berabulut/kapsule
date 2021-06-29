@@ -1,13 +1,10 @@
-package routers
+package main
 
 import (
-	"log"
 	"net/http"
-	"os"
 	"strings"
 	"time"
 
-	"github.com/berabulut/kapsule/helpers"
 	"github.com/berabulut/kapsule/models"
 	db "github.com/berabulut/kapsule/mongo"
 	"github.com/gin-gonic/gin"
@@ -15,13 +12,24 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-var Error = log.New(os.Stdout, "\u001b[31mERROR: \u001b[0m", log.LstdFlags|log.Lshortfile)
+type UserInput struct {
+	URL            string `json:"url"`
+	OptionsEnabled bool   `json:"options_enabled"`
+	Duration       int    `json:"duration"`
+	Message        string `json:"message"`
+}
 
 func ShortenURL() func(c *gin.Context) {
 	return func(c *gin.Context) {
-		var request models.UserInput
+		var request UserInput
 		c.BindJSON(&request)
-		shortid, _ := shortid.Generate()
+
+		shortid, err := shortid.Generate()
+		if err != nil {
+			Error.Println(err)
+			c.JSON(500, gin.H{})
+			return
+		}
 
 		// to get title of html page
 		resp, err := http.Get(request.URL)
@@ -30,12 +38,10 @@ func ShortenURL() func(c *gin.Context) {
 		}
 		defer resp.Body.Close()
 
-		htmlTitle, ok := helpers.GetHtmlTitle(resp.Body)
-
+		htmlTitle, ok := GetHtmlTitle(resp.Body)
 		if !ok {
 			htmlTitle = "Not found"
 		}
-
 		htmlTitle = strings.TrimSpace(htmlTitle)
 
 		shortURL := &models.ShortURL{
@@ -65,18 +71,15 @@ func ShortenURL() func(c *gin.Context) {
 func GetDetails() func(c *gin.Context) {
 	return func(c *gin.Context) {
 		key := c.Request.URL.Path[1:]
-		record, _ := db.GetRecord(key)
 
-		if record.Key != "" {
+		if record, _ := db.GetRecord(key); record.Key != "" {
 			c.JSON(200, gin.H{
 				"record": record,
 			})
 			return
 		}
 
-		c.JSON(404, gin.H{
-			"record": "",
-		})
+		c.JSON(404, gin.H{})
 
 	}
 }
@@ -90,11 +93,10 @@ func GetMultipleRecords() func(c *gin.Context) {
 
 		for _, key := range keys {
 
-			record, _ := db.GetRecord(key)
-
-			if record.Key != "" {
+			if record, _ := db.GetRecord(key); record.Key != "" {
 				values = append(values, record)
 			}
+
 		}
 
 		if len(values) > 0 {
@@ -104,9 +106,7 @@ func GetMultipleRecords() func(c *gin.Context) {
 			return
 		}
 
-		c.JSON(404, gin.H{
-			"records": nil,
-		})
+		c.JSON(404, gin.H{})
 
 	}
 }

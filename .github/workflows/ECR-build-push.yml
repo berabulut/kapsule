@@ -20,7 +20,20 @@ jobs:
         access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         account_id: ${{ secrets.AWS_ACCOUNT_ID }}
-        repo: kapsule/kapsule-service
+        dockerfile: Dockerfile-api
+        repo: kapsule/kapsule-api
+        region: eu-central-1
+        tags: latest,${{ github.sha }}
+        create_repo: true
+        set_repo_policy: true
+        repo_policy_file: repo-policy.json
+    - uses: kciter/aws-ecr-action@v3
+      with:
+        access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        account_id: ${{ secrets.AWS_ACCOUNT_ID }}
+        dockerfile: Dockerfile-redirect
+        repo: kapsule/kapsule-redirect
         region: eu-central-1
         tags: latest,${{ github.sha }}
         create_repo: true
