@@ -32,10 +32,20 @@ func ShortenURL() func(c *gin.Context) {
 		}
 
 		// to get title of html page
-		resp, err := http.Get(request.URL)
-		if err != nil {
-			Error.Println(err)
+		client := http.Client{
+			Timeout: 5 * time.Second,
 		}
+		resp, err := client.Get(request.URL)
+		if err != nil {
+
+			Error.Println(err)
+			c.JSON(400, gin.H{
+				"status": "Not a valid URL",
+			})
+
+			return
+		}
+
 		defer resp.Body.Close()
 
 		htmlTitle, ok := GetHtmlTitle(resp.Body)

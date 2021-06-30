@@ -7,7 +7,7 @@ on:
       - main
 jobs:
   build-and-push:
-    if: github.event.pull_request.merged == true || contains(github.event.head_commit.message, '[ci build]')
+    if: github.event.pull_request.merged == true || contains(github.event.head_commit.message, '@[build]')
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
