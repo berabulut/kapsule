@@ -1,19 +1,19 @@
 
-<h1 >Kapsule</h1>
+<h1>kapsule</h1>
 
 <div align="center">
   <img src="https://github.com/berabulut/kapsule/blob/main/web/static/logo.png?raw=true" alt="kapsule" />
   <h3>
-    <a href="https://kapsule.click/" rel="noopener noreferrer" target="_blank">
+    <a href="https://kapsule.click/">
       Live
     </a>
     <span> | </span>
-    <a href="https://github.com/berabulut/kapsule-ui" rel="noopener noreferrer" target="_blank">
-      Frontend Project
+    <a href="https://github.com/berabulut/kapsule-ui">
+      kapsule-ui
      </a>
     <span> | </span>
-    <a href="https://github.com/berabulut/kapsule-server" rel="noopener noreferrer" target="_blank">
-      Deployment Project
+    <a href="https://github.com/berabulut/kapsule-server">
+      kapsule-server
     </a>
   </h3><br>
   A URL shortener that collects simple user data when someone clicks a shortened link.
@@ -77,6 +77,6 @@ All of the data is collected through HTTP headers.
 
 ## Build and Run
 
-	`sh build.sh`
+`sh build.sh`
 
 Exposes **api** to localhost:8080 and **redirect** to localhost:8081. 
