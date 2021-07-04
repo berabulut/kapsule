@@ -9,8 +9,12 @@ import (
 func ApiRouter() *gin.Engine {
 	r := gin.New()
 	r.Use(gin.Recovery())
-	r.Use(cors.Default())
 	r.Use(gin.Logger())
+
+	config := cors.DefaultConfig()
+	config.AllowOrigins = []string{"https://kapsule.click/"}
+
+	r.Use(cors.New(config))
 
 	m := ginmetrics.GetMonitor()
 	m.SetMetricPath("/metrics")
